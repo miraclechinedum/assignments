@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment Verification</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #f4f4f9;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      input,
+      select,
+      button {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      button {
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+      }
+      button:disabled {
+        background-color: #6c757d;
+        cursor: not-allowed;
+      }
+      button:hover:not(:disabled) {
+        background-color: #218838;
+      }
+      .message {
+        font-weight: bold;
+        color: red;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Payment Verification</h2>
+    <form id="paymentForm">
+      <div>
+        <label for="transactionRef">Transaction Reference:</label>
+        <input
+          type="text"
+          id="transactionRef"
+          placeholder="Enter transaction reference"
+          required
+          style="width: 95%"
+        />
+      </div>
+      <div>
+        <label for="state">Select State:</label>
+        <select id="state" required>
+          <option value="">--Select State--</option>
+          <option value="Osun">Osun</option>
+          <option value="Ondo">Ondo</option>
+          <option value="Ekiti">Ekiti</option>
+        </select>
+      </div>
+      <button type="submit" id="submitButton">Verify Payment</button>
+      <p class="message" id="message"></p>
+    </form>
+
+    <script>
+      document
+        .getElementById("paymentForm")
+        .addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          const transactionRef = document
+            .getElementById("transactionRef")
+            .value.trim();
+          const state = document.getElementById("state").value;
+          const submitButton = document.getElementById("submitButton");
+          const messageElement = document.getElementById("message");
+
+          submitButton.textContent = "Verifying...";
+          submitButton.disabled = true;
+          messageElement.textContent = "";
+
+          const stateConfig = {
+            Osun: {
+              verificationUrl: "https://api.paystack.co/transaction/verify",
+              callUpUrl: "https://osun.callback.url",
+            },
+            Ondo: {
+              verificationUrl: "https://api.paystack.co/transaction/verify",
+              callUpUrl: "https://ondo.callback.url",
+            },
+            Ekiti: {
+              verificationUrl: "https://api.paystack.co/transaction/verify",
+              callUpUrl: "https://ekiti.callback.url",
+            },
+          };
+
+          const { verificationUrl, callUpUrl } = stateConfig[state];
+
+          try {
+            const response = await fetch(
+              `${verificationUrl}/${transactionRef}`,
+              {
+                method: "GET",
+                headers: {
+                  Authorization:
+                    "Bearer sk_test_2bd8e3535de6ddd7b74c7e5921d8b1a3031e21e5",
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+
+            const data = await response.json();
+            console.log("data", data);
+
+            if (data.status) {
+              conosle.log("happy");
+              window.location.href = callUpUrl;
+            } else {
+              messageElement.textContent =
+                "No payment with this reference exists.";
+            }
+          } catch (error) {
+            console.error("Error verifying payment:", error);
+            messageElement.textContent =
+              "An error occurred while verifying payment.";
+          } finally {
+            submitButton.textContent = "Verify Payment";
+            submitButton.disabled = false;
+          }
+        });
+    </script>
+  </body>
+</html>

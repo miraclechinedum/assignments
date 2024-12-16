@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enrollment Form with QR Code</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #ffffff;
+      }
+
+      .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #f9f9f9;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .slip-container {
+        max-width: 600px;
+        margin: 0 auto;
+        margin-top: 4%;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      form {
+        margin-bottom: 20px;
+      }
+
+      form div {
+        margin-bottom: 15px;
+      }
+
+      label {
+        display: block;
+        font-weight: bold;
+      }
+
+      input,
+      select,
+      button {
+        width: 95%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      .enrollment-slip {
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 10px;
+        position: relative;
+        text-align: left;
+        font-size: 14px;
+        background-color: #fff;
+      }
+
+      .enrollment-slip::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url(images/coat_of_arms.png);
+        background-position: center;
+        background-size: contain;
+        background-repeat: no-repeat;
+        opacity: 0.07;
+        z-index: 1;
+      }
+
+      .enrollment-slip .title-con {
+        text-align: center;
+      }
+
+      .enrollment-slip h1 {
+        font-size: 18px;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-bottom: 0;
+        color: #008a3d;
+      }
+
+      .enrollment-slip h2 {
+        font-size: 16px;
+        margin-bottom: 20px;
+        color: #000;
+        text-transform: uppercase;
+      }
+
+      .slip-header {
+        display: flex;
+        justify-content: center;
+      }
+
+      .national-seal img {
+        width: 80px;
+      }
+
+      .details-con {
+        display: flex;
+        align-self: center;
+        justify-content: space-between;
+      }
+
+      .details {
+        margin-top: 20px;
+        line-height: 1.8;
+      }
+
+      .date {
+        text-align: center;
+      }
+
+      .date h5 {
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+      }
+
+      .date span {
+        font-weight: 400;
+        font-size: 14px;
+      }
+
+      .bold {
+        font-weight: bold;
+      }
+
+      .rin-num-con {
+        text-align: center;
+      }
+
+      .nin {
+        font-size: 22px;
+        letter-spacing: 5px;
+        font-weight: bold;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-container">
+      <h1>Enrollment Form</h1>
+      <form id="enrollmentForm">
+        <div>
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" name="firstName" required />
+        </div>
+        <div>
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName" name="lastName" required />
+        </div>
+        <div>
+          <label for="middleName">Middle Name</label>
+          <input type="text" id="middleName" name="middleName" />
+        </div>
+        <div>
+          <label for="sex">Sex</label>
+          <select id="sex" name="sex" required>
+            <option value="">Select</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </div>
+        <div>
+          <label for="rin">RIN Number</label>
+          <input type="text" id="rin" name="rin" required />
+        </div>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+
+    <div class="slip-container">
+      <div id="enrollmentSlip" class="enrollment-slip hidden">
+        <div class="slip-header">
+          <div class="national-seal">
+            <img src="images/coat_of_arms.png" alt="Nigeria Coat of Arms" />
+          </div>
+        </div>
+        <div class="title-con">
+          <h1>Federal Republic of Nigeria</h1>
+          <h2>Digital Enrollment Slip</h2>
+        </div>
+        <div class="details-con">
+          <div class="details">
+            <p>
+              <span class="bold">First Name:</span>
+              <span id="displayFirstName"></span>
+            </p>
+            <p>
+              <span class="bold">Middle Name:</span>
+              <span id="displayMiddleName"></span>
+            </p>
+            <p>
+              <span class="bold">Last Name:</span>
+              <span id="displayLastName"></span>
+            </p>
+            <p><span class="bold">Sex:</span> <span id="displaySex"></span></p>
+          </div>
+          <div class="qr-code-con">
+            <div class="qr-code" id="qrCode"></div>
+            <div class="date">
+              <h5>Issue Date</h5>
+              <span>01 JAN 2021</span>
+            </div>
+          </div>
+        </div>
+        <div class="rin-num-con">
+          <h4>Residence Identification Number (RIN)</h4>
+          <div class="nin" id="formattedRin">0000 0000 0000</div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/qrcode.min.js"></script>
+
+    <script>
+      const form = document.getElementById("enrollmentForm");
+      const enrollmentSlip = document.getElementById("enrollmentSlip");
+      const qrCodeContainer = document.getElementById("qrCode");
+      const formattedRin = document.getElementById("formattedRin");
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const firstName = document.getElementById("firstName").value;
+        const lastName = document.getElementById("lastName").value;
+        const middleName = document.getElementById("middleName").value;
+        const sex = document.getElementById("sex").value;
+        const rin = document.getElementById("rin").value;
+
+        const formattedRinValue = rin
+          .replace(/\D/g, "")
+          .replace(/(\d{4})(\d{4})(\d{4})/, "$1 $2 $3");
+
+        document.getElementById("displayFirstName").textContent = firstName;
+        document.getElementById("displayLastName").textContent = lastName;
+        document.getElementById("displayMiddleName").textContent =
+          middleName || "-";
+        document.getElementById("displaySex").textContent = sex;
+        document.getElementById("formattedRin").textContent = formattedRinValue;
+
+        qrCodeContainer.innerHTML = "";
+        const qrData = `Surname: ${lastName}\nGiven Names: ${firstName} ${middleName}\nSex: ${sex}\nRIN Number: ${rin}`;
+        new QRCode(qrCodeContainer, {
+          text: qrData,
+          width: 128,
+          height: 128,
+        });
+
+        enrollmentSlip.classList.remove("hidden");
+      });
+    </script>
+  </body>
+</html>
